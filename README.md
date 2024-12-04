@@ -64,7 +64,7 @@ if __name__ == "__main__":
 
 2. Write a program to perform encryption and decryption using Rail Fence Cipher
 (transpositional cipher)
-
+```
 def rail_fence_encrypt(text, key):
     """
     Encrypt the text using Rail Fence Cipher.
@@ -170,7 +170,7 @@ if __name__ == "__main__":
 
 
 
-
+```
 
 
 
@@ -182,7 +182,7 @@ if __name__ == "__main__":
 3. Write a Python program that defines a function and takes a password string as input and
 returns its SHA-256 hashed representation as a hexadecimal string.
 
-
+```
 import hashlib
 
 def hash_password(password):
@@ -217,7 +217,7 @@ if __name__ == "__main__":
     main()
 
 
-
+```
 
 
 
@@ -228,7 +228,7 @@ if __name__ == "__main__":
 5. Write a Python program that generates a password using a random combination of
 words from a dictionary file.
 
-
+```
 import random
 
 
@@ -282,7 +282,7 @@ def main():
 
 if __name__ == "__main__":
     main()
-
+```
 
 
 
@@ -296,7 +296,7 @@ if __name__ == "__main__":
 6. Write a Python program that simulates a brute-force attack on a password by trying out
 all possible character combinations.
 
-
+```
 import itertools
 import string
 import time
@@ -345,3 +345,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+```
