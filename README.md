@@ -219,7 +219,92 @@ if __name__ == "__main__":
 
 ```
 
+4. Write a Python program that reads a file containing a list of usernames and passwords,
+one pair per line (separated by a comma). It checks each password to see if it has been
+leaked in a data breach. You can use the "Have I Been Pwned" API
+(https://haveibeenpwned.com/API/v3) to check if a password has been leaked.
 
+```
+import hashlib
+import requests
+
+def hash_password_sha1(password):
+    """
+    Hash the password using SHA-1.
+    :param password: The password string
+    :return: SHA-1 hashed password in hexadecimal format
+    """
+    return hashlib.sha1(password.encode('utf-8')).hexdigest().upper()
+
+
+def check_password_in_hibp(password):
+    """
+    Check if a password has been leaked using the HIBP API.
+    :param password: The password string
+    :return: Number of times the password has been seen in breaches, or 0 if not found
+    """
+    # Hash the password with SHA-1
+    sha1_hash = hash_password_sha1(password)
+    # Get the first 5 characters of the hash for K-anonymity
+    prefix = sha1_hash[:5]
+    suffix = sha1_hash[5:]
+    # Query the HIBP API with the prefix
+    url = f"https://api.pwnedpasswords.com/range/{prefix}"
+    response = requests.get(url)
+
+    if response.status_code != 200:
+        raise Exception(f"Error querying HIBP API: {response.status_code}")
+
+    # Search the response for the hash suffix
+    hashes = response.text.splitlines()
+    for line in hashes:
+        hash_suffix, count = line.split(':')
+        if hash_suffix == suffix:
+            return int(count)
+
+    return 0
+
+
+def process_file(file_path):
+    """
+    Process a file of usernames and passwords.
+    :param file_path: Path to the file containing username,password pairs
+    """
+    try:
+        with open(file_path, 'r') as file:
+            for line in file:
+                # Strip and split each line into username and password
+                username, password = line.strip().split(',')
+                # Check if the password has been leaked
+                count = check_password_in_hibp(password)
+                if count > 0:
+                    print(f"WARNING: Password for user '{username}' has been leaked {count} times!")
+                else:
+                    print(f"Password for user '{username}' is safe.")
+    except FileNotFoundError:
+        print(f"Error: File '{file_path}' not found.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+
+def main():
+    """
+    Main function to check passwords against HIBP.
+    """
+    file_path = input("Enter the path to the file containing usernames and passwords: ")
+    process_file(file_path)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+password.txt
+```
+user1,password123
+user2,securepassword
+user3,password
+```
 
 
 
